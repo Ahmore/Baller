@@ -1,0 +1,131 @@
+/**********************************
+ *	Project		Baller loader     *
+ *  Build 		04 Jan, 2018      *
+ * 	Author		Dariusz Szymczyk  *
+ **********************************/
+
+// Loader name
+$name: "baller";
+
+// Dimensions
+$size     : 10px;
+$padding  : 5px;
+$height   : 40px;
+
+// Colors
+$color1   : #ccff33;
+$color2   : #6b89e6;
+
+// Timing
+$duration : .9s;
+$delay    : .3s;
+
+// Max balls
+$max      : 16;
+
+.#{$name} {
+    height: $height;
+    display: inline-block;
+
+    // Each ball container
+    .ball {
+        float: left;
+        position: relative;
+        top: calc(100% - #{$size});
+        width: $size;
+        height: $size;
+        margin-right: $padding;
+
+        // Last child with no right margin
+        &:last-child {
+            margin-right: 0;
+        }
+
+        // Ball
+        &:after {
+            content: "";
+            width: $size;
+            height: $size;
+            border-radius: 0.5*$size;
+
+            position: absolute;
+            bottom: $height - $size;
+
+            animation: jumping $duration cubic-bezier(.83, .03, 1, 1) alternate infinite,
+            deformationing $duration cubic-bezier(.02, .68, .55, 1) alternate infinite,
+            coloring $duration ease-out alternate infinite;
+        }
+
+        // Shadow
+        &:before {
+            content: "";
+            width: $size;
+            height: 0.25*$size;
+            border-radius: 50%;
+
+            position: absolute;
+
+            bottom: (-1)*0.5*0.25*$size;
+
+            animation: shadowing $duration cubic-bezier(.83, .03, 1, 1) alternate infinite;
+        }
+
+        // Delay configuration
+        @for $i from 1 through $max {
+            &:nth-child(#{$i}):after,
+            &:nth-child(#{$i}):before{
+                animation-delay: ($i - 1)*$delay - $max*$duration;
+            }
+        }
+    }
+}
+
+// Jumping animation
+@keyframes jumping {
+    0% {
+        bottom: $height - $size;
+    }
+
+    93%, 100% {
+        bottom: 0;
+    }
+}
+
+// Deformationing animation
+@keyframes deformationing {
+    0%,93%	 {
+        border-radius: 0.5*$size;
+        height: $size;
+    }
+
+    100% {
+        border-radius: (0.5*$size) (0.5*$size) (0.1*$size) (0.1*$size) unquote("/") (0.4*$size) (0.4*$size) (0.2*$size) (0.2*$size);
+        height: 0.6*$size;
+    }
+}
+
+// Coloring animation
+@keyframes coloring {
+    0% {
+        background-color: $color1;
+    }
+
+    93%, 100% {
+        background-color: $color2;
+    }
+}
+
+// Shadowing animation
+@keyframes shadowing {
+    0% {
+        transform: scale(0.5);
+        opacity: 0.01;
+        background-color: $color1;
+    }
+
+    93%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+        background-color: $color2;
+    }
+}
